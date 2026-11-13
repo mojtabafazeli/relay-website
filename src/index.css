@@ -3,7 +3,7 @@
 :root {
   font-family: 'DM Sans', sans-serif;
   color: #172019;
-  background: #f7f8f4;
+  background: #ffffff;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -12,9 +12,9 @@
   font-weight: 400;
 
   --ink: #172019;
-  --muted: #656d65;
-  --paper: #f7f8f4;
-  --lime: #d7ff63;
+  --muted: #3e4b42;
+  --paper: #ffffff;
+  --accent: #18552f;
   --forest: #17251e;
   --mono: 'DM Mono', monospace;
   --display: 'Space Grotesk', sans-serif;
@@ -25,13 +25,11 @@
 }
 
 html {
-  min-width: 360px;
   scroll-behavior: smooth;
   scroll-padding-top: 82px;
 }
 
 body {
-  min-width: 360px;
   margin: 0;
 }
 
@@ -46,14 +44,26 @@ a {
 }
 
 button:focus-visible,
-a:focus-visible {
-  outline: 3px solid #9dbd2c;
-  outline-offset: 4px;
+a:focus-visible,
+pre:focus-visible {
+  outline: 3px solid #18552f;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px #ffffff;
 }
 
 ::selection {
   color: var(--ink);
-  background: var(--lime);
+  background: #dcebdd;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
 }
 
 @media (prefers-reduced-motion: reduce) {

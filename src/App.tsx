@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import './App.css';
 
 const sourceUrl = 'https://github.com/mojtabafazeli/relay';
@@ -78,6 +78,8 @@ function Mark({ small = false }: { small?: boolean }) {
 
 function App() {
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'failed'>('idle');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const mobileMenuButton = useRef<HTMLButtonElement>(null);
 
   async function copyCommand() {
     try {
@@ -89,28 +91,56 @@ function App() {
     window.setTimeout(() => setCopyStatus('idle'), 1800);
   }
 
+  function closeMobileMenu() {
+    setMobileMenuOpen(false);
+  }
+
   return (
     <>
-      <header className="site-header">
+      <a className="skip-link" href="#main-content">Skip to main content</a>
+      <header
+        className="site-header"
+        onKeyDown={(event) => {
+          if (event.key === 'Escape' && mobileMenuOpen) {
+            closeMobileMenu();
+            mobileMenuButton.current?.focus();
+          }
+        }}
+      >
         <a className="brand" href="#home" aria-label="Relay home">
           <Mark />
           <span>relay<span className="brand-period">.</span></span>
         </a>
-        <nav className="main-nav" aria-label="Main navigation">
-          <a href="#how-it-works">How it works</a>
-          <a href="#features">Features</a>
-          <a href="#quickstart">Quickstart</a>
-          <a href="#commands">CLI reference</a>
+        <nav
+          id="main-navigation"
+          className={`main-nav${mobileMenuOpen ? ' main-nav-open' : ''}`}
+          aria-label="Main navigation"
+        >
+          <a href="#how-it-works" onClick={closeMobileMenu}>How it works</a>
+          <a href="#features" onClick={closeMobileMenu}>Features</a>
+          <a href="#quickstart" onClick={closeMobileMenu}>Quickstart</a>
+          <a href="#commands" onClick={closeMobileMenu}>CLI reference</a>
         </nav>
-        <a className="header-link" href={sourceUrl} target="_blank" rel="noreferrer">
+        <button
+          ref={mobileMenuButton}
+          className="mobile-menu-toggle"
+          type="button"
+          aria-controls="main-navigation"
+          aria-expanded={mobileMenuOpen}
+          aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
+          <span aria-hidden="true">{mobileMenuOpen ? '×' : '☰'}</span>
+        </button>
+        <a className="header-link" href={sourceUrl}>
           Source access <span aria-hidden="true">↗</span>
         </a>
       </header>
 
-      <main>
+      <main id="main-content">
         <section className="hero section-wrap" id="home">
           <div className="hero-copy">
-            <div className="eyebrow"><span className="status-dot" /> File-defined workflow orchestration</div>
+            <div className="eyebrow"><span className="status-dot" aria-hidden="true" /> File-defined workflow orchestration</div>
             <h1>From a prompt<br />to a <span>working process.</span></h1>
             <p className="hero-lede">
               Relay connects AI agents, scripts, and people in repeatable workflows you can
@@ -125,15 +155,15 @@ function App() {
               </a>
             </div>
             <div className="hero-meta">
-              <span><i className="meta-node" /> Node.js 22+</span>
-              <span><i className="meta-node" /> macOS · Windows · Linux</span>
-              <span><i className="meta-node" /> TypeScript</span>
+              <span><i className="meta-node" aria-hidden="true" /> Node.js 22+</span>
+              <span><i className="meta-node" aria-hidden="true" /> macOS · Windows · Linux</span>
+              <span><i className="meta-node" aria-hidden="true" /> TypeScript</span>
             </div>
           </div>
 
-          <div className="terminal-card" aria-label="Example Relay workflow configuration">
+          <div className="terminal-card" role="group" aria-label="Example Relay workflow configuration">
             <div className="terminal-top">
-              <div className="window-dots"><i /><i /><i /></div>
+              <div className="window-dots" aria-hidden="true"><i /><i /><i /></div>
               <span>relay.yaml</span>
               <span className="terminal-badge">workflow</span>
             </div>
@@ -158,7 +188,7 @@ function App() {
               <div><span className="line-no">18</span>    <span className="code-dim">author:</span> <span className="code-peach">writer</span></div>
               <div><span className="line-no">19</span>    <span className="code-dim">reviewers:</span> <span className="code-green">[reviewer]</span></div>
               <div><span className="line-no">20</span>    <span className="code-dim">max_rounds:</span> <span className="code-green">3</span></div>
-              <div><span className="line-no">21</span>    <span className="code-dim">on_limit:</span> <span className="code-peach">ask-human</span><span className="code-cursor">▍</span></div>
+              <div><span className="line-no">21</span>    <span className="code-dim">on_limit:</span> <span className="code-peach">ask-human</span><span className="code-cursor" aria-hidden="true">▍</span></div>
             </div>
             <div className="terminal-foot">
               <span><i className="terminal-live" /> human-approved steps</span>
@@ -170,10 +200,10 @@ function App() {
         </section>
 
         <section className="trust-strip" aria-label="Relay properties">
-          <div><span className="strip-icon">⌘</span><span>File-defined workflows</span></div>
-          <div><span className="strip-icon">◎</span><span>Your tools, your logins</span></div>
-          <div><span className="strip-icon">◷</span><span>Local run records</span></div>
-          <div><span className="strip-icon">⌁</span><span>Cross-platform by design</span></div>
+          <div><span className="strip-icon" aria-hidden="true">⌘</span><span>File-defined workflows</span></div>
+          <div><span className="strip-icon" aria-hidden="true">◎</span><span>Your tools, your logins</span></div>
+          <div><span className="strip-icon" aria-hidden="true">◷</span><span>Local run records</span></div>
+          <div><span className="strip-icon" aria-hidden="true">⌁</span><span>Cross-platform by design</span></div>
         </section>
 
         <section className="section-wrap workflow-section" id="how-it-works">
@@ -200,7 +230,7 @@ function App() {
             ))}
           </div>
           <div className="workflow-note">
-            <span className="note-icon">↳</span>
+            <span className="note-icon" aria-hidden="true">↳</span>
             <p><strong>Human gates stay human.</strong> The <code>--yes</code> flag confirms the run summary; it never approves a review or gate for you.</p>
           </div>
         </section>
@@ -235,31 +265,34 @@ function App() {
             <div className="access-note">
               <span className="access-lock" aria-hidden="true">⌑</span>
               <p><strong>Source access is currently restricted.</strong><br />Relay’s source repository is private. You’ll need GitHub access to clone or download it.</p>
-              <a href={sourceUrl} target="_blank" rel="noreferrer">Check repository access <span aria-hidden="true">↗</span></a>
+              <a href={sourceUrl}>Check repository access <span aria-hidden="true">↗</span></a>
             </div>
           </div>
           <div className="quickstart-grid">
             <div className="quickstart-copy">
               <div className="prereq-list">
-                <div><span className="prereq-check">✓</span><span><strong>Node.js 22 or newer</strong><small>Check with <code>node --version</code></small></span></div>
-                <div><span className="prereq-check">✓</span><span><strong>Git</strong><small>Required for workflows that write files</small></span></div>
-                <div><span className="prereq-check prereq-optional">↗</span><span><strong>An AI CLI (optional)</strong><small>Claude Code for AI stages; the example needs only Node</small></span></div>
+                <div><span className="prereq-check" aria-hidden="true">✓</span><span><strong>Node.js 22 or newer</strong><small>Check with <code>node --version</code></small></span></div>
+                <div><span className="prereq-check" aria-hidden="true">✓</span><span><strong>Git</strong><small>Required for workflows that write files</small></span></div>
+                <div><span className="prereq-check prereq-optional" aria-hidden="true">↗</span><span><strong>An AI CLI (optional)</strong><small>Claude Code for AI stages; the example needs only Node</small></span></div>
               </div>
               <p className="quickstart-tip"><strong>Just exploring?</strong> The bundled <code>example</code> workflow runs a Node script without an AI account. Claude Code and generic CLI agents can run AI stages; Codex support is not verified yet.</p>
             </div>
             <div className="install-card">
               <div className="install-card-head"><span>Build from source</span><span className="platform-tag">macOS · Windows · Linux</span></div>
               <ol className="install-steps">
-                <li><span className="install-number">1</span><div><span>Clone and enter the project</span><pre><code>git clone {sourceUrl}.git<br />cd relay</code></pre></div></li>
-                <li><span className="install-number">2</span><div><span>Install dependencies and build</span><pre><code>npm ci<br />npm run build</code></pre></div></li>
-                <li><span className="install-number">3</span><div><span>Create a starter project and check it</span><pre><code>node dist/src/cli/index.js init --template example<br />node dist/src/cli/index.js validate</code></pre></div></li>
-                <li><span className="install-number">4</span><div><span>Run the workflow</span><pre><code>node dist/src/cli/index.js run --yes</code></pre></div></li>
+                <li><span className="install-number" aria-hidden="true">1</span><div><span>Clone and enter the project</span><pre tabIndex={0}><code>git clone {sourceUrl}.git<br />cd relay</code></pre></div></li>
+                <li><span className="install-number" aria-hidden="true">2</span><div><span>Install dependencies and build</span><pre tabIndex={0}><code>npm ci<br />npm run build</code></pre></div></li>
+                <li><span className="install-number" aria-hidden="true">3</span><div><span>Create a starter project and check it</span><pre tabIndex={0}><code>node dist/src/cli/index.js init --template example<br />node dist/src/cli/index.js validate</code></pre></div></li>
+                <li><span className="install-number" aria-hidden="true">4</span><div><span>Run the workflow</span><pre tabIndex={0}><code>node dist/src/cli/index.js run --yes</code></pre></div></li>
               </ol>
               <div className="install-card-foot">
                 <span>Want the <code>relay</code> command? Run <code>npm link</code> from the cloned project.</span>
                 <button className="copy-button" onClick={copyCommand} type="button" aria-label="Copy build commands">
                   {copyStatus === 'copied' ? 'Copied ✓' : copyStatus === 'failed' ? 'Copy failed' : 'Copy build commands'}
                 </button>
+                <span className="visually-hidden" aria-live="polite">
+                  {copyStatus === 'copied' ? 'Build commands copied.' : copyStatus === 'failed' ? 'Could not copy build commands.' : ''}
+                </span>
               </div>
             </div>
           </div>
@@ -294,10 +327,10 @@ function App() {
             </p>
           </div>
           <div className="safety-list">
-            <div><span>↗</span><p><strong>Review the access summary</strong><small>Commands, workdir, Git status, and agent access before the run.</small></p></div>
-            <div><span>◷</span><p><strong>Set practical limits</strong><small>Bound individual turns and total run time.</small></p></div>
-            <div><span>◎</span><p><strong>Keep credentials with you</strong><small>Relay uses existing CLI logins; it does not host model APIs.</small></p></div>
-            <div><span>!</span><p><strong>Understand the boundaries</strong><small>Git checks cannot see writes outside the workdir or prevent a permitted process from transmitting data.</small></p></div>
+            <div><span aria-hidden="true">↗</span><p><strong>Review the access summary</strong><small>Commands, workdir, Git status, and agent access before the run.</small></p></div>
+            <div><span aria-hidden="true">◷</span><p><strong>Set practical limits</strong><small>Bound individual turns and total run time.</small></p></div>
+            <div><span aria-hidden="true">◎</span><p><strong>Keep credentials with you</strong><small>Relay uses existing CLI logins; it does not host model APIs.</small></p></div>
+            <div><span aria-hidden="true">!</span><p><strong>Understand the boundaries</strong><small>Git checks cannot see writes outside the workdir or prevent a permitted process from transmitting data.</small></p></div>
           </div>
         </section>
 
@@ -308,7 +341,7 @@ function App() {
             <div className="eyebrow">Your workflow, clearly defined</div>
             <h2>Make good work<br /><span>repeatable.</span></h2>
             <p>Explore the project or get in touch with the team for source access.</p>
-            <a className="button button-lime" href={sourceUrl} target="_blank" rel="noreferrer">
+            <a className="button button-lime" href={sourceUrl}>
               View Relay on GitHub <span aria-hidden="true">↗</span>
             </a>
             <span className="private-caption">Repository access is currently required to download the source.</span>
@@ -319,7 +352,7 @@ function App() {
       <footer className="site-footer">
         <a className="brand footer-brand" href="#home"><Mark small /><span>relay<span className="brand-period">.</span></span></a>
         <span>File-defined workflows for AI agents, scripts, and people.</span>
-        <a href={sourceUrl} target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+        <a href={sourceUrl}>GitHub <span aria-hidden="true">↗</span></a>
       </footer>
     </>
   );
